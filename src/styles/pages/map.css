@@ -43,7 +43,7 @@
   z-index: 5;
 }
 
-#page-map .create-orphanage {
+#page-map .create-asilo {
   position: absolute;
   right: 40px;
   bottom: 40px;
@@ -62,6 +62,39 @@
   transition: background-color 0.2s;
 }
 
-#page-map .create-orphanage:hover {
+#page-map .create-asilo:hover {
   background-color: #17d6eb;
+}
+
+#page-map .map-popup .leaflet-popup-content-wrapper {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  box-shadow: none;
+}
+
+#page-map .map-popup .leaflet-popup-content {
+  color: #0089a5;
+  font-size: 17px;
+  font-weight: bold;
+  margin: 8px 12px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#page-map .map-popup .leaflet-popup-content a {
+  width: 40px;
+  height: 40px;
+  background-color: #15c3d6;
+  box-shadow: 17px 27px 41px rgba(23, 142, 166, 0.16);
+  border-radius: 12px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#page-map .map-popup .leaflet-popup-tip-container {
+  display: none;
 }

@@ -12,8 +12,8 @@ function Landing() {
       <div className="content-wrapper">
         <img src={Logo} alt="Happy" />
         <main>
-          <h1>Leve felicidade para o mundo</h1>
-          <p>Visite orfanatos e mude o dia de muitas crianças.</p>
+          <h1>Projeto Senhoras & Senhores</h1>
+          <p>Visite uma das nossas casa de repouso para idosos.</p>
         </main>
         <div className="location">
           <strong>Campos dos Goytacazes</strong>
