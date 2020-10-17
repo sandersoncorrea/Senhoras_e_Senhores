@@ -1,73 +1,80 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FaWhatsapp } from "react-icons/fa";
 import { FiClock, FiInfo } from "react-icons/fi";
 import { Map, Marker, TileLayer } from "react-leaflet";
+import { useParams } from "react-router-dom";
 
 import "../styles/pages/asilo.css";
 import Sidebar from "../components/Sidebar";
 import mapIcon from "../utils/mapIcon";
+import api from "../services/api";
+
+interface Asilo {
+  latitude: number;
+  longitude: number;
+  name: string;
+  about: string;
+  instructions: string;
+  opening_hours: string;
+  open_on_weeks: string;
+  images: Array<{
+    url: string;
+    id: string;
+  }>;
+}
+
+interface RouteParams {
+  id: string;
+}
 
 export default function Asilo() {
+  const params = useParams<RouteParams>();
+  const [asilo, setAsilo] = useState<Asilo>();
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+
+  useEffect(() => {
+    api.get(`asilos/${params.id}`).then((response) => {
+      const { data } = response;
+      setAsilo(data);
+    });
+  }, [params.id]);
+
+  if (!asilo) {
+    return <p>Carregando...</p>;
+  }
+
   return (
     <div id="page-asilo">
       <Sidebar />
 
       <main>
         <div className="asilo-details">
-          <img
-            src="https://www.gcd.com.br/wp-content/uploads/2020/08/safe_image.jpg"
-            alt="Lar das meninas"
-          />
+          <img src={asilo.images[activeImageIndex].url} alt={asilo.name} />
 
           <div className="images">
-            <button className="active" type="button">
-              <img
-                src="https://www.gcd.com.br/wp-content/uploads/2020/08/safe_image.jpg"
-                alt="Lar das meninas"
-              />
-            </button>
-            <button type="button">
-              <img
-                src="https://www.gcd.com.br/wp-content/uploads/2020/08/safe_image.jpg"
-                alt="Lar das meninas"
-              />
-            </button>
-            <button type="button">
-              <img
-                src="https://www.gcd.com.br/wp-content/uploads/2020/08/safe_image.jpg"
-                alt="Lar das meninas"
-              />
-            </button>
-            <button type="button">
-              <img
-                src="https://www.gcd.com.br/wp-content/uploads/2020/08/safe_image.jpg"
-                alt="Lar das meninas"
-              />
-            </button>
-            <button type="button">
-              <img
-                src="https://www.gcd.com.br/wp-content/uploads/2020/08/safe_image.jpg"
-                alt="Lar das meninas"
-              />
-            </button>
-            <button type="button">
-              <img
-                src="https://www.gcd.com.br/wp-content/uploads/2020/08/safe_image.jpg"
-                alt="Lar das meninas"
-              />
-            </button>
+            {asilo.images.map((img, index) => {
+              return (
+                <button
+                  key={img.id}
+                  className={activeImageIndex === index ? "active" : ""}
+                  type="button"
+                  onClick={() => {
+                    setActiveImageIndex(index);
+                  }}
+                >
+                  <img src={img.url} alt={asilo.name} />
+                </button>
+              );
+            })}
           </div>
 
           <div className="asilo-details-content">
-            <h1>Lar das meninas</h1>
-            <p>
-              Presta assistência a crianças de 06 a 15 anos que se encontre em
-              situação de risco e/ou vulnerabilidade social.
-            </p>
+            <h1>{asilo.name}</h1>
+            <p>{asilo.about}</p>
 
             <div className="map-container">
               <Map
-                center={[-27.2092052, -49.6401092]}
+                center={[asilo.latitude, asilo.longitude]}
                 zoom={16}
                 style={{ width: "100%", height: 280 }}
                 dragging={false}
@@ -82,33 +89,46 @@ export default function Asilo() {
                 <Marker
                   interactive={false}
                   icon={mapIcon}
-                  position={[-27.2092052, -49.6401092]}
+                  position={[asilo.latitude, asilo.longitude]}
                 />
               </Map>
 
               <footer>
-                <a href="">Ver rotas no Google Maps</a>
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={`https://www.google.com/maps/dir/?api=1&destination=${asilo.latitude},${asilo.longitude}`}
+                >
+                  Ver rotas no Google Maps
+                </a>
               </footer>
             </div>
 
             <hr />
 
             <h2>Instruções para visita</h2>
-            <p>
-              Venha como se sentir mais à vontade e traga muito amor para dar.
-            </p>
+            <p>{asilo.instructions}</p>
 
             <div className="open-details">
               <div className="hour">
                 <FiClock size={32} color="#15B6D6" />
                 Segunda à Sexta <br />
-                8h às 18h
+                {asilo.opening_hours}
               </div>
-              <div className="open-on-weekends">
-                <FiInfo size={32} color="#39CC83" />
-                Atendemos <br />
-                fim de semana
-              </div>
+              {asilo.open_on_weeks ? (
+                <div className="open-on-weekends">
+                  <FiInfo size={32} color="#39CC83" />
+                  Atendemos aos
+                  <br />
+                  fim de semana
+                </div>
+              ) : (
+                <div className="open-on-weekends">
+                  <FiInfo size={32} color="#FF669D" />
+                  Não atendemos aos <br />
+                  fim de semana
+                </div>
+              )}
             </div>
 
             <button type="button" className="contact-button">
