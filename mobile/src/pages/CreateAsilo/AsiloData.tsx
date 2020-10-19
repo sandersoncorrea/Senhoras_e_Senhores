@@ -12,9 +12,9 @@ import {
 import { Feather } from '@expo/vector-icons';
 import { RectButton } from 'react-native-gesture-handler';
 import { useNavigation, useRoute } from '@react-navigation/native';
-// import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from 'expo-image-picker';
 
-// import api from '../../services/api';
+import api from '../../services/api';
 
 interface AsiloDataRouteParams {
   position: {
@@ -56,32 +56,32 @@ export default function AsiloData() {
       } as any);
     });
 
-    // await api.post('asilos', data);
+    await api.post('asilos', data);
 
-    navigation.navigate('AsilosMap');
+    navigation.navigate('Map');
   }
 
-//   async function handleSelectImages() {
-//     const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+  async function handleSelectImages() {
+    const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
 
-//     if (status !== 'granted') {
-//       alert('Eita, precisamos de acesso a suas fotos...');
-//       return;
-//     }
+    if (status !== 'granted') {
+      alert('Eita, precisamos de acesso às suas fotos...');
+      return;
+    }
 
-//     const result = await ImagePicker.launchImageLibraryAsync({
-//       allowsEditing: true,
-//       quality: 1,
-//       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-//     });
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 1,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    });
 
-//     if (result.cancelled) {
-//       return;
-//     }
-//     const { uri: image } = result;
+    if (result.cancelled) {
+      return;
+    }
+    const { uri: image } = result;
 
-//     setImages([...images, image]);
-//   }
+    setImages([...images, image]);
+  }
 
   return (
     <ScrollView
@@ -101,10 +101,10 @@ export default function AsiloData() {
         onChangeText={setAbout}
       />
 
-      {/* <Text style={styles.label}>Whatsapp</Text>
+      <Text style={styles.label}>Whatsapp</Text>
       <TextInput
         style={styles.input}
-      /> */}
+      />
 
       <Text style={styles.label}>Fotos</Text>
       <View style={styles.uploadedImagesContainer}>
@@ -116,7 +116,7 @@ export default function AsiloData() {
           />
         ))}
       </View>
-      <TouchableOpacity style={styles.imagesInput} onPress={() => {}}>
+      <TouchableOpacity style={styles.imagesInput} onPress={handleSelectImages}>
         <Feather name="plus" size={24} color="#15B6D6" />
       </TouchableOpacity>
 

@@ -13,14 +13,14 @@ import { Feather, FontAwesome } from '@expo/vector-icons';
 import { RectButton, TouchableOpacity } from 'react-native-gesture-handler';
 import { useRoute } from '@react-navigation/native';
 
-import mapMarkerImg from '../images/pin.png';
-// import api from '../services/api';
+import pin from '../images/pin.png';
+import api from '../services/api';
 
-interface OrphanageDetailsRouteParams {
+interface AsiloDetailsRouteParams {
   id: number;
 }
 
-interface Orphanage {
+interface Asilo {
   id: number;
   name: string;
   latitude: number;
@@ -35,20 +35,20 @@ interface Orphanage {
   }>;
 }
 
-export default function OrphanageDetails() {
-  const [orphanage, setOrphanage] = useState<Orphanage>();
+export default function AsiloDetails() {
+  const [asilo, setAsilo] = useState<Asilo>();
 
   const route = useRoute();
 
-  const params = route.params as OrphanageDetailsRouteParams;
+  const params = route.params as AsiloDetailsRouteParams;
 
-//   useEffect(() => {
-//     api.get(`orphanages/${params.id}`).then((response) => {
-//       setOrphanage(response.data);
-//     });
-//   }, [params.id]);
+  useEffect(() => {
+    api.get(`asilos/${params.id}`).then((response) => {
+      setAsilo(response.data);
+    });
+  }, [params.id]);
 
-  if (!orphanage) {
+  if (!asilo) {
     return (
       <View style={styles.container}>
         <Text style={styles.description}>Carregando...</Text>
@@ -58,7 +58,7 @@ export default function OrphanageDetails() {
 
   function handleOpenGoogleMapRoutes() {
     Linking.openURL(
-      `https://www.google.com/maps/dir/?api=1&destination=${orphanage?.latitude},${orphanage?.longitude}`
+      `https://www.google.com/maps/dir/?api=1&destination=${asilo?.latitude},${asilo?.longitude}`
     );
   }
 
@@ -66,7 +66,7 @@ export default function OrphanageDetails() {
     <ScrollView style={styles.container}>
       <View style={styles.imagesContainer}>
         <ScrollView horizontal pagingEnabled>
-          {orphanage.images.map((image) => (
+          {asilo.images.map((image) => (
             <Image
               key={image.id}
               style={styles.image}
@@ -79,15 +79,15 @@ export default function OrphanageDetails() {
       </View>
 
       <View style={styles.detailsContainer}>
-        <Text style={styles.title}>{orphanage.name}</Text>
+        <Text style={styles.title}>{asilo.name}</Text>
 
-        <Text style={styles.description}>{orphanage.about}</Text>
+        <Text style={styles.description}>{asilo.about}</Text>
 
         <View style={styles.mapContainer}>
           <MapView
             initialRegion={{
-              latitude: orphanage.latitude,
-              longitude: orphanage.longitude,
+              latitude: asilo.latitude,
+              longitude: asilo.longitude,
               latitudeDelta: 0.008,
               longitudeDelta: 0.008,
             }}
@@ -98,11 +98,10 @@ export default function OrphanageDetails() {
             style={styles.mapStyle}
           >
             <Marker
-              icon={mapMarkerImg}
+              icon={pin}
               coordinate={{
-                latitude: orphanage.latitude,
-
-                longitude: orphanage.longitude,
+                latitude: asilo.latitude,
+                longitude: asilo.longitude,
               }}
             />
           </MapView>
@@ -118,7 +117,7 @@ export default function OrphanageDetails() {
         <View style={styles.separator} />
 
         <Text style={styles.title}>Instruções para visita</Text>
-        <Text style={styles.description}>{orphanage.instructions}</Text>
+        <Text style={styles.description}>{asilo.instructions}</Text>
 
         <View style={styles.scheduleContainer}>
           <View style={[styles.scheduleItem, styles.scheduleItemBlue]}>
@@ -126,11 +125,11 @@ export default function OrphanageDetails() {
 
             <Text style={[styles.scheduleText, styles.scheduleTextBlue]}>
               Segunda à Sexta
-              {orphanage.opening_hours}
+              {asilo.opening_hours}
             </Text>
           </View>
 
-          {orphanage.open_on_weekends ? (
+          {asilo.open_on_weekends ? (
             <View style={[styles.scheduleItem, styles.scheduleItemGreen]}>
               <Feather name="info" size={40} color="#39CC83" />
 

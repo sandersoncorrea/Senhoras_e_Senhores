@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { RectButton } from 'react-native-gesture-handler';
 import MapView, { MapEvent, Marker } from 'react-native-maps';
 
-import mapMarkerImg from '../../images/pin.png';
+import pin from '../../images/pin.png';
 
 export default function SelectMapPosition() {
   const [position, setPosition] = useState({ latitude: 0, longitude: 0 });
@@ -33,7 +33,7 @@ export default function SelectMapPosition() {
       >
         {position.latitude !== 0 && (
           <Marker
-            icon={mapMarkerImg}
+            icon={pin}
             coordinate={{
               latitude: position.latitude,
               longitude: position.longitude,

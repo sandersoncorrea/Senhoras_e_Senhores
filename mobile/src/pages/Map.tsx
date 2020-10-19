@@ -1,17 +1,33 @@
-import React from 'react';
+import React , {useEffect, useState } from 'react';
 
 import { StyleSheet, Text, View, Dimensions } from "react-native";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import MapView, { Marker, Callout, PROVIDER_GOOGLE } from "react-native-maps";
 import { Feather} from '@expo/vector-icons'
 
 import pin from "../images/pin.png";
 import { RectButton } from 'react-native-gesture-handler';
+import api from '../services/api';
+
+interface Asilo {
+  id: number;
+  name: string;
+  latitude: number;
+  longitude: number;
+}
 
 export default function Map(){
     const navigation = useNavigation();
-    function handleNavigateToDetails(){
-        navigation.navigate('AsiloDetails');
+
+    const [asilos, setAsilos] = useState<Asilo[]>([]);
+    useFocusEffect(() => {
+      api.get('/asilos').then(response => {
+        setAsilos(response.data);
+      });
+    });
+
+    function handleNavigateToDetails(id: number){
+        navigation.navigate('AsiloDetails', { id });
     }
     function handleNavigateToCreateAsilo(){
       navigation.navigate('SelectMapPosition');
@@ -28,19 +44,24 @@ export default function Map(){
             longitudeDelta: 0.008,
           }}
         >
-          <Marker 
-            icon={pin} 
-            coordinate={{latitude: -21.7482345, longitude: -41.3330914,}}
-            calloutAnchor={{x: 2.7, y: 0.8}}>
-              <Callout tooltip onPress={handleNavigateToDetails}>
-                <View style={styles.calloutContainer}>
-                  <Text style={styles.calloutText}>Asilo do Carmo</Text>
-                </View>
-              </Callout>
-            </Marker>
+          {asilos.map(asilo => {
+            return (
+              <Marker 
+                key={asilo.id}
+                icon={pin} 
+                coordinate={{latitude: asilo.latitude, longitude: asilo.longitude,}}
+                calloutAnchor={{x: 2.7, y: 0.8}}>
+                  <Callout tooltip onPress={() =>handleNavigateToDetails(asilo.id)}>
+                    <View style={styles.calloutContainer}>
+                  <Text style={styles.calloutText}>{asilo.name}</Text>
+                    </View>
+                  </Callout>
+                </Marker>
+            );
+          })}
         </MapView>
         <View style={styles.footer}>
-          <Text style={styles.footerText}>2 asilos encontrados</Text>
+          <Text style={styles.footerText}>{asilos.length} asilos encontrados</Text>
   
           <RectButton style={styles.createAsiloButton} onPress={handleNavigateToCreateAsilo}>
             <Feather name="plus" size={20} color="#FFF" />
