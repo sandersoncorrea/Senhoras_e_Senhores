@@ -1,16 +1,20 @@
 import React from 'react';
 
-import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, Dimensions } from "react-native";
+import { useNavigation } from '@react-navigation/native';
 import MapView, { Marker, Callout, PROVIDER_GOOGLE } from "react-native-maps";
 import { Feather} from '@expo/vector-icons'
-import { useNavigation } from '@react-navigation/native';
 
 import pin from "../images/pin.png";
+import { RectButton } from 'react-native-gesture-handler';
 
 export default function Map(){
+    const navigation = useNavigation();
     function handleNavigateToDetails(){
-        const navigation = useNavigation();
         navigation.navigate('AsiloDetails');
+    }
+    function handleNavigateToCreateAsilo(){
+      navigation.navigate('SelectMapPosition');
     }
 
     return (<View style={styles.container}>
@@ -38,9 +42,9 @@ export default function Map(){
         <View style={styles.footer}>
           <Text style={styles.footerText}>2 asilos encontrados</Text>
   
-          <TouchableOpacity style={styles.createAsiloButton} onPress={() => {}}>
+          <RectButton style={styles.createAsiloButton} onPress={handleNavigateToCreateAsilo}>
             <Feather name="plus" size={20} color="#FFF" />
-          </TouchableOpacity>
+          </RectButton>
         </View>
       </View>)
 }
